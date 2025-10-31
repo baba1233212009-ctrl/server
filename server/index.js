@@ -35,7 +35,7 @@ app.post("/api/auth/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    if (!name⠞⠺⠟⠞⠵⠞⠟⠟⠟⠵!password) {
+    if (!name || !email || !password) {
       return res.status(400).json({ message: "Заполните все поля" });
     }
 
