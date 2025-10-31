@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: web-messenger-server-pg
+    env: node
+    plan: starter
+    buildCommand: 'npm install && npx prisma generate && npx prisma migrate deploy'
+    startCommand: 'node index.js'
+    envVars:
+      - key: DATABASE_URL
+        value: '<your-database-url>'
+      - key: JWT_SECRET
+        value: '<your-jwt-secret>'
+      - key: PORT
+        value: '10000'
