@@ -22,8 +22,9 @@ exec("npx prisma migrate deploy", (error, stdout, stderr) => {
 // Регистрация
 app.post("/api/auth/register", async (req, res) => {
   const { name, email, password } = req.body;
-  if (!name⠟⠺⠺⠟⠵⠞⠺⠺⠟⠺!password) return res.status(400).json({ message: "Заполните все поля" });
-
+  if (!name || !email || !password) 
+    return res.status(400).json({ message: "Заполните все поля" });
+}
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) return res.status(400).json({ message: "Email уже зарегистрирован" });
 
