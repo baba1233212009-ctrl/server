@@ -49,7 +49,7 @@ app.post("/api/auth/login", async (req, res) => {
     }
 
     // Простая имитация токена (замени на JWT при необходимости)
-    const token = ${user.id}.${user.email}.${Date.now()};
+    const token = '${user.id}.${user.email}.${Date.now()}';
 
     return res.json({ token, id: user.id, name: user.name, email: user.email });
   } catch (err) {
