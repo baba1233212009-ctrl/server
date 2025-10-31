@@ -1,3 +1,4 @@
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,64 +9,53 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  name        String
-  email       String   @unique
-  passwordHash String
-  avatar      String?
-  status      String   @default("offline")
-  contacts    User[]   @relation("UserContacts", references: [id])
-  ContactLinks Contact[] @relation("ContactOwner")
-  messagesFrom Message[] @relation("from")
-  chats       ChatMember[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  password      String
+  avatar        String?
+  status        String?   @default("online")
+  contacts      Contact[] @relation("UserContacts")
+  ownedContacts Contact[] @relation("ContactOwner")
+  messages      Message[]
+  reactions     Reaction[]
+  chats         Chat[]    @relation("UserChats")
+  createdAt     DateTime  @default(now())
 }
 
 model Contact {
-  id       Int   @id @default(autoincrement())
-  ownerId  Int
-  contactId Int
-  owner    User @relation("ContactOwner", fields: [ownerId], references: [id])
-  contact  User @relation("UserContacts", fields: [contactId], references: [id])
+  id         Int    @id @default(autoincrement())
+  owner      User   @relation("ContactOwner", fields: [ownerId], references: [id])
+  ownerId    Int
+  contact    User   @relation("UserContacts", fields: [contactId], references: [id])
+  contactId  Int
+  createdAt  DateTime @default(now())
 }
 
 model Chat {
-  id          Int      @id @default(autoincrement())
-  isGroup     Boolean  @default(false)
-  title       String?
-  members     ChatMember[]
-  messages    Message[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model ChatMember {
-  id     Int   @id @default(autoincrement())
-  chat   Chat  @relation(fields: [chatId], references: [id])
-  chatId Int
-  user   User  @relation(fields: [userId], references: [id])
-  userId Int
+  id        Int        @id @default(autoincrement())
+  name      String?
+  users     User[]     @relation("UserChats")
+  messages  Message[]
+  createdAt DateTime   @default(now())
 }
 
 model Message {
-  id          Int      @id @default(autoincrement())
-  chat        Chat     @relation(fields: [chatId], references: [id])
-  chatId      Int
-  from        User     @relation("from", fields: [fromId], references: [id])
-  fromId      Int
-  text        String?
-  attachments String[]
-  reactions   Reaction[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int         @id @default(autoincrement())
+  content    String
+  chat       Chat         @relation(fields: [chatId], references: [id])
+  chatId     Int
+  sender     User         @relation(fields: [senderId], references: [id])
+  senderId   Int
+  reactions  Reaction[]
+  createdAt  DateTime     @default(now())
 }
 
 model Reaction {
-  id        Int    @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   emoji     String
-  by        User   @relation(fields: [byId], references: [id])
+  by        User     @relation(fields: [byId], references: [id])
   byId      Int
-  message   Message @relation(fields: [messageId], references: [id])
+  message   Message  @relation(fields: [messageId], references: [id])
   messageId Int
 }
